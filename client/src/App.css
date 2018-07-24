@@ -1,0 +1,59 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  position: relative;
+  animation: App-logo-spin infinite 20s linear;
+  height: 1.5em;
+}
+
+.App-header {
+  background-color: #222;
+  /* height: 5%; */
+  padding: 20px; 
+  color: white;
+}
+
+.App-title {
+  display: inline-block;
+  font-size: 1.5em;
+  margin: 0;
+}
+
+/* .App-intro {
+  font-size: large;
+} */
+
+/* @keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+} */
+
+ul {
+  margin: 20px;
+  padding: 0;
+}
+li {
+  list-style-type: none;
+}
+
+.ticket {
+  white-space: normal;
+  background-color: black;
+  /* background-image: url(imgs/discoBG.png); */
+  background-size: 70%;
+  background-position-x: right;
+  background-position-y: bottom;
+  background-repeat: no-repeat;
+  /* height: 150px; */
+  /* padding: 5px; */
+  margin: 5px;
+  color: white; 
+}
+
+.qr-small{
+  height: 50px;
+  /* float: left; */
+  margin: 5px;
+}
