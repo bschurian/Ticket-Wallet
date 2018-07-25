@@ -9,20 +9,20 @@ import styles from './TicketListItem.css';
 
 function TicketListItem(props) {
   return (
-    <div className={styles['single-ticket']}>
-      <h3 className={styles['ticket-title']}>
+    <div className='single-ticket'>
+      <h3 className={'ticket-title'}>
         <Link to={`/tickets/${props.ticket.cuid}`} >
           {props.ticket.title}
         </Link>
       </h3>
       {/* <p className={styles['author-name']}><FormattedMessage id="by" /> {props.ticket.name}</p> */}
-      <p className={styles['ticket-desc']}>{props.ticket.content}</p>
+      <p className={'ticket-desc'}>{props.ticket.content}</p>
       <Collapsible trigger={<button>More</button>} lazyRender={true} triggerWhenOpen="">
             <QRCode value={props.ticket.content} />
             created 1.1.2018
       </Collapsible>
 
-      <p className={styles['ticket-action']}><a href="#" onClick={props.onDelete}>Delete Ticket</a></p>
+      <p className={'ticket-action'}><a href="#" onClick={props.onDelete}>Delete Ticket</a></p>
 
       <hr className={styles.divider} />
     </div>

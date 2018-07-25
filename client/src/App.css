@@ -10,8 +10,8 @@
 
 .App-header {
   background-color: #222;
-  /* height: 5%; */
-  padding: 20px; 
+  height: 5em;
+  padding: 10px; 
   color: white;
 }
 
@@ -19,4 +19,11 @@
   display: inline-block;
   font-size: 1.5em;
   margin: 0;
+}
+
+.auth{
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  align-self: center;
 }

@@ -74,45 +74,48 @@ class App extends Component {
         console.error(error);
     };
     render() {
-        let auth = this.state.isAuthenticated ?
-            (
-                <div>
-                    <br />
-                    <User />
-                    <button onClick={this.signout} className="logoutButton" >
-                        Logout
+        let auth = <div className="auth">{
+            this.state.isAuthenticated ?
+                (
+                    <div>
+                        <br />
+                        <User />
+                        <button onClick={this.signout} className="logoutButton" >
+                            Logout
                 </button>
-                </div>
-            ) : (
-                <div>
-                    <br />
-                    <GoogleLogin
-                        clientId="608216264695-93sejhvjsk8dloetsbdiod8gqjmpgutd.apps.googleusercontent.com"
-                        buttonText="Login"
-                        onSuccess={this.signup}
-                        onFailure={this.onFailure}
-                    />
-                </div>
-            );
+                    </div>
+                ) : (
+                    <div>
+                        <br />
+                        <GoogleLogin
+                            clientId="608216264695-93sejhvjsk8dloetsbdiod8gqjmpgutd.apps.googleusercontent.com"
+                            buttonText="Login"
+                            onSuccess={this.signup}
+                            onFailure={this.onFailure}
+                        />
+                    </div>
+                )
+        }</div>;
         return (
             <Provider store={this.state.store}>
                 <Router history={createBrowserHistory()} >
                     <div className="App">
                         <header className="App-header">
-                            <h1 className="App-title">{this.state.title}</h1>
                             {auth}
-
+                            <h1 className="App-title">Ticket Wallet</h1>
                         </header>
                         <main>
                             <Route exact={true} path="/" render={() =>
                                 <TicketList tickets={JSON.parse(localStorage.getItem('tickets'))} handleDeleteTicket={(ticketId) => console.log("delete " + ticketId)} />
                             }>
                             </Route>
-                            <Route path="/tickets/:ticketId" render={({match}) => {
-                                 const ticket = JSON.parse(localStorage.getItem('tickets')).find((t)=>{console.log(match.params);
-                                     return t.cuid==match.params.ticketId});
-                                     return (ticket?<TicketListItem ticket={ticket} handleDeleteTicket={(ticketId) => console.log("delete " + ticketId)} /> : 
-                                <h3>This Id does not match any Ticket you own</h3>);
+                            <Route path="/tickets/:ticketId" render={({ match }) => {
+                                const ticket = JSON.parse(localStorage.getItem('tickets')).find((t) => {
+                                    console.log(match.params);
+                                    return t.cuid == match.params.ticketId
+                                });
+                                return (ticket ? <TicketListItem ticket={ticket} onDelete={(ticket) => console.log("delete " + ticket.cuid)} /> :
+                                    <h3>This Id does not match any Ticket you own</h3>);
                             }
                             }>
                             </Route>
