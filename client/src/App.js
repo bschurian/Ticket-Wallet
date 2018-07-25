@@ -32,7 +32,6 @@ class App extends Component {
     }
     /**
      *  signup function, reads the data from the googleresponse and fills the sessionStorage and current State with the userData
-     *  TODO POST Request to database to get the ticket data (new method)
      */
     signup = (response) => {
         let postData = {googleid: response.w3.Eea ,name: response.w3.ig, email: response.w3.U3, token: response.Zi.access_token};

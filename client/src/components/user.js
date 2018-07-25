@@ -8,37 +8,37 @@ class User extends Component{
         * TODO (userObj+) googleId, name, email, token nur zum Entwickeln, später aus App holen und verarbeiten
         * */
         this.state = {
-            isRegistered: false,
+            isRegistered: null,
             userObj: {},
             tickets: []
         }
     }
     componentDidMount(){
-        console.log("USER MOUNT");
-        this.checkUser();
-        if(this.state.isRegistered){
-            this.getTickets();
+        if(this.state.isRegistered===null){
+            console.log("check user");
+            this.checkUser();
         }
     }
 
-    //TODO nur das um alles zu holen(+tickets) und Ticekts dann seperat verarbeiten oder 2mal holen
-    //TODO wenn ja dann im error Teil den 40XError anfangen für User existiert nicht und newUser callen
-    checkUser = () => {
-        fetch('http://localhost:3000/users/'+JSON.parse(sessionStorage.getItem("userData")).googleid)
-            .then(this.fetchStatusHandler)
-            .then(response => response.json())
-            .then(parsedJSON => parsedJSON.result)
-            .then(userObj => this.setState({userObj}))
-            .catch(function (error){
-                console.log('Parsing user failed ',error);
-            });
-        if(this.state.userObj.length === 0){
-            this.setState({isRegistered:true});
-            console.log("userObj exists ",this.state.userObj.length);
+    processUserValidation = () => {
+        if(this.state.isRegistered){
+            console.log("userObj exists ",this.state.userObj);
+            this.getTickets();
         }else{
             console.log("creating new user");
             this.newUser(JSON.parse(sessionStorage.getItem("userData")));
         }
+    };
+
+    checkUser = () => {
+        fetch('http://localhost:3000/users/'+JSON.parse(sessionStorage.getItem("userData")).googleid)
+            .then(this.fetchStatusHandler)
+            .then(response => this.setState({isRegistered:true}))
+            .then(this.processUserValidation)
+            .catch(function (error){
+                console.log('Parsing user failed ',error);
+            });
+
     };
 
     fetchStatusHandler(response) {
@@ -50,7 +50,7 @@ class User extends Component{
     }
 
     getTickets = () => {
-        fetch('http://localhost:3000/users/'+JSON.parse(sessionStorage.getItem("userData").googleid))
+        fetch('http://localhost:3000/users/'+JSON.parse(sessionStorage.getItem("userData")).googleid)
             .then(response => response.json())
             .then(parsedJSON => parsedJSON.results.map(ticket =>(
                 {
@@ -64,7 +64,7 @@ class User extends Component{
                 }
             )))
             .then(tickets => this.setState({
-                tickets
+                tickets: tickets
             }))
             .catch(error => console.log('Parsing tickets failed', error));
         if(this.state.tickets){
@@ -88,6 +88,7 @@ class User extends Component{
                 })
             }
         )
+            .then(this.fetchStatusHandler)
             .catch(error => console.log('creating new user failed',error))
     };
 
