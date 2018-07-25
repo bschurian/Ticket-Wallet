@@ -52,7 +52,7 @@ class App extends Component {
      * alerts the error if the googleResponse got an error
      */
     onFailure = (error) => {
-        alert(error);
+        console.error(error);
     };
     render() {
         let auth = this.state.isAuthenticated ?

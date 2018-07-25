@@ -28,15 +28,21 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 import User from './models/user';
-let newUser = new User({
+const ticket1 = { title: 'Kinoticket', cuid: 'cikqgkv4q01ck7453ualEn3hk', content: 'Kinoplex 24 Film: "Krieg der Sterne"' };
+const ticket2 = { title: 'Bahnticket', cuid: 'cikqgkv4q01ck7453ualdn3hl', content: 'Bahnticket München-Berlin 12.3 Zug 54321' };
+const ticket3 = { title: 'Konzert', cuid: '321', content: 'Michael Jackson' };
+const newUser = new User({
   name: 'Frank',
   googleid: '1234',
   cuid: 'cikqgkv4q01ck7453ualdn3hd',
+  tickets: [
+    ticket1, ticket2, ticket3
+  ],
 });
 User.create([newUser], (error) => {
   if (!error) {
     console.log('ready to go....');
-  }else{
+  } else {
     console.log('error creating user');
   }
 });
