@@ -108,12 +108,12 @@ class App extends Component {
                                 <TicketList tickets={JSON.parse(localStorage.getItem('tickets'))} handleDeleteTicket={(ticketId) => console.log("delete " + ticketId)} />
                             }>
                             </Route>
-                            <Route exact={true} path="/:ticketId" render={() =>
-                                <TicketListItem ticket={{
-                                    title: "asdfasdf",
-                                    content: "asdfasdfasdf",
-                                    cuid: "123412341234",
-                                }} handleDeleteTicket={(ticketId) => console.log("delete " + ticketId)} />
+                            <Route path="/tickets/:ticketId" render={({match}) => {
+                                 const ticket = JSON.parse(localStorage.getItem('tickets')).find((t)=>{console.log(match.params);
+                                     return t.cuid==match.params.ticketId});
+                                     return (ticket?<TicketListItem ticket={ticket} handleDeleteTicket={(ticketId) => console.log("delete " + ticketId)} /> : 
+                                <h3>This Id does not match any Ticket you own</h3>);
+                            }
                             }>
                             </Route>
                         </main>

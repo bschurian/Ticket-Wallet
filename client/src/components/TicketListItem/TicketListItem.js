@@ -11,7 +11,7 @@ function TicketListItem(props) {
   return (
     <div className={styles['single-ticket']}>
       <h3 className={styles['ticket-title']}>
-        <Link to={`/tickets/${props.ticket.slug}-${props.ticket.cuid}`} >
+        <Link to={`/tickets/${props.ticket.cuid}`} >
           {props.ticket.title}
         </Link>
       </h3>
