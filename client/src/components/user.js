@@ -14,6 +14,8 @@ class User extends Component{
         }
     }
     componentDidMount(){
+        /*console.log("TEST CREATE");
+        this.newUser(JSON.parse(sessionStorage.getItem("userData")));*/
         if(this.state.isRegistered===null){
             console.log("check user");
             this.checkUser();
@@ -22,7 +24,7 @@ class User extends Component{
 
     processUserValidation = () => {
         if(this.state.isRegistered){
-            console.log("userObj exists ",this.state.userObj);
+            console.log("userObj exists ");
             this.getTickets();
         }else{
             console.log("creating new user");
@@ -42,6 +44,7 @@ class User extends Component{
     };
 
     fetchStatusHandler(response) {
+        console.log("check statuscode", response.status);
         if (response.status >= 200 && response.status < 300) {
             return response;
         } else {
@@ -50,42 +53,26 @@ class User extends Component{
     }
 
     getTickets = () => {
+        console.log("get tickets");
         fetch('http://localhost:3000/users/'+JSON.parse(sessionStorage.getItem("userData")).googleid)
+            .then(this.fetchStatusHandler)
             .then(response => response.json())
-            .then(parsedJSON => parsedJSON.results.map(ticket =>(
-                {
-                    id: `${ticket.id}`,
-                    googleid: `${ticket.googleid}`,
-                    name: `${ticket.name}`,
-                    date: `${ticket.date}`,
-                    category: `${ticket.category}`,
-                    qrdata: `${ticket.qrdata}`,
-                    info: `${ticket.info}`,
-                }
-            )))
-            .then(tickets => this.setState({
-                tickets: tickets
-            }))
+            .then(parsedJSON => this.setState({tickets: parsedJSON.user.tickets}))
+            .then(x => localStorage.setItem('tickets', JSON.stringify(this.state.tickets)))
+            //.then(parsedJSON => localStorage.setItem('tickets', parsedJSON.user.tickets))
             .catch(error => console.log('Parsing tickets failed', error));
-        if(this.state.tickets){
-            localStorage.setItem('tickets', JSON.stringify(this.state.tickets));
-        }
     };
 
     newUser = (userData) => {
-        fetch('http://localhost:3000/users',
+        fetch('/users/',
             {
                 method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body:JSON.stringify({
-                    googleId: userData.googleId,
+                body:{
+                    googleid: userData.googleid,
                     name: userData.name,
-                    email: userData.email,
-                    token: userData.token
-                })
+                    tickets: [],
+                    cuid: userData.token
+                }
             }
         )
             .then(this.fetchStatusHandler)
