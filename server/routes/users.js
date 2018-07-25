@@ -13,9 +13,11 @@ router.post('/', UserController.addUser);
 // Delete a post by cuid
 router.delete('/', UserController.deleteUsers);
 
-router.use('/:googleid/tickets/:ticketid', UserController.getTicket);
+router.get('/:googleid/tickets/:ticketid', UserController.getTicket);
 
-router.use('/:googleid/tickets', UserController.getTickets);
+router.get('/:googleid/tickets', UserController.getTickets);
+
+router.post('/:googleid/tickets', UserController.addTicket);
 
 
 module.exports = router;

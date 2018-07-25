@@ -3,6 +3,13 @@ import cuid from 'cuid';
 // import slug from 'limax/lib/limax';
 import sanitizeHtml from 'sanitize-html';
 
+function sanitizeTicket(ticket) {
+	return {
+		title: sanitizeHtml(ticket.title),
+		content: sanitizeHtml(ticket.content),
+		cuid: cuid(),
+	};
+}
 
 /**
  * Save a user
@@ -22,6 +29,7 @@ export function addUser(req, res) {
 	newUser.name = sanitizeHtml(newUser.name);
 	newUser.googleid = sanitizeHtml(newUser.googleid);
 	newUser.cuid = cuid();
+	newUser.tickets = newUser.tickets.map(sanitizeTicket);
 	newUser.save((err, saved) => {
 		if (err) {
 			res.status(500).send(err);
@@ -52,15 +60,15 @@ export function getUser(req, res) {
  * @returns void
  */
 export function deleteUsers(req, res) {
-  User.find().exec((err, users) => {
-    if (err) {
-      res.status(500).send(err);
-    }
+	User.find().exec((err, users) => {
+		if (err) {
+			res.status(500).send(err);
+		}
 
-    users.map((user)=>user.remove(() => {
-	}));
-	res.status(200).end();
-  });
+		users.map((user) => user.remove(() => {
+		}));
+		res.status(200).end();
+	});
 }
 
 /**
@@ -79,6 +87,29 @@ export function getTickets(req, res) {
 }
 
 /**
+ * Add ticket
+ * @param req
+ * @param res
+ * @returns void
+ */
+export function addTicket(req, res) {
+	const newTicket = sanitizeTicket(req.body);
+	User.findOne({ googleid: req.params.googleid }).exec((err, user) => {
+		if (err) {
+			res.status(500).send(err);
+		}
+		user.tickets.push(newTicket);
+		user.save(function (err, userUpdated) {
+			if (err) {
+				res.status(500).send(err);
+			}
+			res.send(newTicket);
+		});
+	});
+}
+
+
+/**
  * Get one tickets
  * @param req
  * @param res
@@ -89,6 +120,6 @@ export function getTicket(req, res) {
 		if (err) {
 			res.status(500).send(err);
 		}
-		res.json(user.tickets.find(ticket=>ticket.cuid==req.params.ticketid));
+		res.json(user.tickets.find(ticket => ticket.cuid == req.params.ticketid));
 	});
 }
