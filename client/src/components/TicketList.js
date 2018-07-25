@@ -6,6 +6,8 @@ import TicketListItem from './TicketListItem/TicketListItem';
 
 function TicketList(props) {
   return (
+    <div>
+      
     <div className="listView">
       {
         props.tickets.map(ticket => (
@@ -17,15 +19,16 @@ function TicketList(props) {
         ))
       }
     </div>
+    </div>
   );
 }
 
 TicketList.propTypes = {
   tickets: PropTypes.arrayOf(PropTypes.shape({
-    name: PropTypes.string.isRequired,
+    // name: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     content: PropTypes.string.isRequired,
-    slug: PropTypes.string.isRequired,
+    // slug: PropTypes.string.isRequired,
     cuid: PropTypes.string.isRequired,
   })).isRequired,
   handleDeleteTicket: PropTypes.func.isRequired,
