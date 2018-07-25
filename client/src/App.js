@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import './App.css';
 import TicketList from './components/ticket-list';
 import GoogleLogin from 'react-google-login';
+import User from './components/user.js';
 
 class App extends Component {
     // // Check for browser support of service worker
@@ -41,7 +42,6 @@ class App extends Component {
         sessionStorage.setItem('userData',JSON.stringify(postData));
         console.log(sessionStorage.getItem('userData'));
         this.setState({isAuthenticated:true,name: postData.name,email: postData.email});
-
     };
     /**
      *  called on signout, clears the session and resets the state
@@ -68,6 +68,7 @@ class App extends Component {
             (
                 <div>
                     <br/>
+                    <User/>
                     <button onClick={this.signout} className="logoutButton" >
                         Logout
                     </button>
