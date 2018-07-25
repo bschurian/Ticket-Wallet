@@ -49,7 +49,11 @@ export function getUser(req, res) {
 		if (err) {
 			res.status(500).send(err);
 		}
-		res.json({ user });
+		if(user == null){
+			res.status(404).send();
+		}else{
+			res.json({ user });
+		}
 	});
 }
 
