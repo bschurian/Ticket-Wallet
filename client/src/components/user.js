@@ -4,28 +4,24 @@ class User extends Component{
 
     constructor(props) {
         super(props);
-        /*
-        * TODO (userObj+) googleId, name, email, token nur zum Entwickeln, später aus App holen und verarbeiten
-        * */
         this.state = {
             isRegistered: null,
             userObj: {},
-            tickets: []
+            tickets: [],
         }
     }
     componentDidMount(){
-        if(this.state.isRegistered===null){
-            console.log("check user");
+        if(this.state.isRegistered === null){
             this.checkUser();
+        }else if(this.state.isRegistered === false){
+            this.processUserValidation();
         }
     }
 
     processUserValidation = () => {
         if(this.state.isRegistered){
-            console.log("userObj exists ",this.state.userObj);
             this.getTickets();
         }else{
-            console.log("creating new user");
             this.newUser(JSON.parse(sessionStorage.getItem("userData")));
         }
     };
@@ -33,12 +29,16 @@ class User extends Component{
     checkUser = () => {
         fetch('http://localhost:3000/users/'+JSON.parse(sessionStorage.getItem("userData")).googleid)
             .then(this.fetchStatusHandler)
-            .then(response => this.setState({isRegistered:true}))
+            .then(x => this.setState({isRegistered:true}))
             .then(this.processUserValidation)
-            .catch(function (error){
-                console.log('Parsing user failed ',error);
-            });
+            .catch(error => this.gotError(error));
 
+    };
+
+    gotError = (error) => {
+        console.log("user doesn't exist", error);
+        this.setState({isRegistered:false});
+        this.processUserValidation()
     };
 
     fetchStatusHandler(response) {
@@ -52,40 +52,21 @@ class User extends Component{
     getTickets = () => {
         fetch('http://localhost:3000/users/'+JSON.parse(sessionStorage.getItem("userData")).googleid)
             .then(response => response.json())
-            .then(parsedJSON => parsedJSON.results.map(ticket =>(
-                {
-                    id: `${ticket.id}`,
-                    googleid: `${ticket.googleid}`,
-                    name: `${ticket.name}`,
-                    date: `${ticket.date}`,
-                    category: `${ticket.category}`,
-                    qrdata: `${ticket.qrdata}`,
-                    info: `${ticket.info}`,
-                }
-            )))
-            .then(tickets => this.setState({
-                tickets: tickets
-            }))
+            .then(parsedJSON => this.setState({tickets: parsedJSON.user.tickets}))
+            .then(x => localStorage.setItem('tickets', JSON.stringify(this.state.tickets)))
+            //.then(parsedJSON => localStorage.setItem('tickets', parsedJSON.user.tickets))
             .catch(error => console.log('Parsing tickets failed', error));
-        if(this.state.tickets){
-            localStorage.setItem('tickets', JSON.stringify(this.state.tickets));
-        }
     };
 
     newUser = (userData) => {
-        fetch('http://localhost:3000/users',
+        fetch('/users/',
             {
                 method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body:JSON.stringify({
-                    googleId: userData.googleId,
-                    name: userData.name,
-                    email: userData.email,
-                    token: userData.token
-                })
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({user:{googleid: userData.googleid,
+                        name: userData.name,
+                        tickets: [],
+                        cuid: userData.token}})
             }
         )
             .then(this.fetchStatusHandler)

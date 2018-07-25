@@ -15,13 +15,13 @@ import createBrowserHistory from 'history/createBrowserHistory';
 const tickets = function (state = { tickets: [] }, action) {
     switch (action.type) {
         case 'ADD_TICKET':
-            return state.tickets.concat([action.text])
+            return state.tickets.concat([action.text]);
         default:
             return state
     }
 }
 
-const store = createStore(tickets, ['Use Redux'])
+const store = createStore(tickets, ['Use Redux']);
 
 class App extends Component {
     /**
@@ -57,7 +57,6 @@ class App extends Component {
         let postData = { googleid: response.w3.Eea, name: response.w3.ig, email: response.w3.U3, token: response.Zi.access_token };
 
         sessionStorage.setItem('userData', JSON.stringify(postData));
-        console.log(sessionStorage.getItem('userData'));
         this.setState({ isAuthenticated: true, name: postData.name, email: postData.email });
     };
     /**
@@ -66,7 +65,6 @@ class App extends Component {
     signout = () => {
         this.setState({ isAuthenticated: false, name: '', email: '' });
         sessionStorage.clear();
-        console.log(sessionStorage.getItem('userData'));
     };
     /**
      * alerts the error if the googleResponse got an error
