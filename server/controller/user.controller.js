@@ -51,8 +51,9 @@ export function getUser(req, res) {
 		}
 		if(user == null){
 			res.status(404).send();
+		}else{
+			res.json({ user });
 		}
-		res.json({ user });
 	});
 }
 
