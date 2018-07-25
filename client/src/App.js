@@ -5,6 +5,7 @@ import TicketListItem from './components/TicketListItem/TicketListItem';
 import PropTypes from 'prop-types';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
+import { Collapsible } from 'react-collapsible';
 import GoogleLogin from 'react-google-login';
 import User from './components/user.js';
 import { Router } from 'react-router';
@@ -104,7 +105,7 @@ class App extends Component {
                         </header>
                         <main>
                             <Route exact={true} path="/" render={() =>
-                                <TicketList tickets={this.state.tickets} handleDeleteTicket={(ticketId) => console.log("delete " + ticketId)} />
+                                <TicketList tickets={JSON.parse(localStorage.getItem('tickets'))} handleDeleteTicket={(ticketId) => console.log("delete " + ticketId)} />
                             }>
                             </Route>
                             <Route exact={true} path="/:ticketId" render={() =>
@@ -112,8 +113,7 @@ class App extends Component {
                                     title: "asdfasdf",
                                     content: "asdfasdfasdf",
                                     cuid: "123412341234",
-                                }
-                                } handleDeleteTicket={(ticketId) => console.log("delete " + ticketId)} />
+                                }} handleDeleteTicket={(ticketId) => console.log("delete " + ticketId)} />
                             }>
                             </Route>
                         </main>

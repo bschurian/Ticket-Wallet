@@ -8,13 +8,14 @@ import styles from './TicketCreateWidget.css';
 export class TicketCreateWidget extends Component {
   constructor(props) {
     super(props);
-    this.state = { qrText: null};
+    this.state = { qrText: "No QR-Text", title: "No Title" };
   }
   addTicket = () => {
     const titleRef = this.refs.title;
     const contentRef = this.refs.content;
     if (titleRef.value && contentRef.value) {
       // this.props.addTicket( titleRef.value, contentRef.value);
+      this.setState({title:titleRef.value});
       this.openQRCamera(contentRef.files[0]);
     }
   };
@@ -27,11 +28,24 @@ export class TicketCreateWidget extends Component {
           alert("No QR code found. Please make sure the QR code is within the camera's frame and try again.");
         } else {
           that.setState({ qrText: res });
+          that.sendNewTicket()
         }
       };
       qrcode.decode(reader.result);
+      
     };
     reader.readAsDataURL(file);
+  }
+  sendNewTicket() {
+    fetch('/users/' + JSON.parse(sessionStorage.getItem("userData")).googleid + '/tickets',
+      {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          title: this.state.title,
+          content: this.state.qrText
+        })
+      }).then(console.log).catch(console.error);
   }
   render() {
     const cls = `${styles.form} ${(this.props.showAddTicket ? styles.appear : '')}`;
