@@ -42,15 +42,31 @@ export class TicketCreateWidget extends Component {
   }
   //param title beacause setstate appears to be async and not fast enough to complete before fetch
   sendNewTicket(title) {
-    fetch('/users/' + JSON.parse(sessionStorage.getItem("userData")).googleid + '/tickets',
-      {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({
-          title: title,
-          content: this.state.qrText
-        })
-      }).then(console.log).catch(console.error);
+    const userData = JSON.parse(sessionStorage.getItem("userData"));
+    const existingTickets = JSON.parse(localStorage.getItem('tickets')) || [];
+    if (userData) {
+      fetch('/users/' + userData.googleid + '/tickets',
+        {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({
+            title: title,
+            content: this.state.qrText
+          })
+        }).then(response => response.json())
+        // .then(parsedJSON => this.setState({tickets: parsedJSON.user.tickets}))
+        .then(res =>
+          {
+          return localStorage.setItem('tickets', JSON.stringify(existingTickets.concat(res)))}
+        ).catch(console.error);
+    } else {
+      const newTicket = {
+        title: title,
+        content: this.state.qrText,
+        cuid: ""+(Math.random()*10000)
+      };
+      localStorage.setItem('tickets', JSON.stringify(existingTickets.concat(newTicket)));
+    }
   }
   render() {
     const handleScanUnbound = function (content) {
@@ -72,7 +88,7 @@ export class TicketCreateWidget extends Component {
             ref={(ref) => { this.refs.content = ref }}
           />
           <Collapsible
-            trigger={<button>Take a Picture</button>}
+            trigger={<button>Take a Picture</button>} lazyRender={true}
             onClose={() => this.setState({ qrCamClosed: true })}
             onOpen={() => { console.log(99); this.setState({ qrCamClosed: false }); }}>
             {!this.state.qrCamClosed ? <QRCam handleScan={handleScan} /> : ''}

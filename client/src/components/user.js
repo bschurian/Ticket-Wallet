@@ -28,6 +28,7 @@ class User extends Component{
 
     checkUser = () => {
         fetch('http://localhost:3000/users/'+JSON.parse(sessionStorage.getItem("userData")).googleid)
+            .then((x)=>{console.log(x);return x})
             .then(this.fetchStatusHandler)
             .then(x => this.setState({isRegistered:true}))
             .then(this.processUserValidation)
@@ -50,11 +51,12 @@ class User extends Component{
     }
 
     getTickets = () => {
+        console.log('http://localhost:3000/users/'+JSON.parse(sessionStorage.getItem("userData")).googleid);
         fetch('http://localhost:3000/users/'+JSON.parse(sessionStorage.getItem("userData")).googleid)
             .then(response => response.json())
             .then(parsedJSON => this.setState({tickets: parsedJSON.user.tickets}))
-            .then(x => localStorage.setItem('tickets', JSON.stringify(this.state.tickets)))
-            //.then(parsedJSON => localStorage.setItem('tickets', parsedJSON.user.tickets))
+            // .then(x => localStorage.setItem('tickets', JSON.stringify(this.state.tickets)))
+            .then(parsedJSON => localStorage.setItem('tickets', parsedJSON.user.tickets))
             .catch(error => console.log('Parsing tickets failed', error));
     };
 

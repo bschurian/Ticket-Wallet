@@ -50,75 +50,88 @@ class App extends Component {
             tickets,
             store
         };
+        //TODO get Google API to work and change back to signup
+        // this.signupFallback();
     }
     /**
      *  signup function, reads the data from the googleresponse and fills the sessionStorage and current State with the userData
      */
     signup = (response) => {
         let postData = { googleid: response.w3.Eea, name: response.w3.ig, email: response.w3.U3, token: response.Zi.access_token };
+        console.log(postData);
 
         sessionStorage.setItem('userData', JSON.stringify(postData));
         this.setState({ isAuthenticated: true, name: postData.name, email: postData.email });
     };
     /**
-     *  called on signout, clears the session and resets the state
+     *  signup function, reads the data from the googleresponse and fills the sessionStorage and current State with the userData
      */
-    signout = () => {
-        this.setState({ isAuthenticated: false, name: '', email: '' });
-        sessionStorage.clear();
-    };
-    /**
-     * alerts the error if the googleResponse got an error
-     */
-    onFailure = (error) => {
-        console.error(error);
-    };
-    render() {
-        let auth = <div className="auth">{
-            this.state.isAuthenticated ?
-                (
-                    <div>
-                        <User />
-                        <button onClick={this.signout} className="logoutButton" >Logout</button>
-                    </div>
-                ) : (
-                        <GoogleLogin
-                            clientId="608216264695-93sejhvjsk8dloetsbdiod8gqjmpgutd.apps.googleusercontent.com"
-                            buttonText="Login"
-                            onSuccess={this.signup}
-                            onFailure={this.onFailure}
-                        />
-                )
-        }</div>;
-        return (
-            <Provider store={this.state.store}>
-                <Router history={createBrowserHistory()} >
-                    <div className="App">
-                        <header className="App-header">
-                            {auth}
-                            <h1 className="App-title">Ticket Wallet</h1>
-                        </header>
-                        <main>
-                            <Route exact={true} path="/" render={() =>
-                                <TicketList tickets={JSON.parse(localStorage.getItem('tickets'))} handleDeleteTicket={(ticketId) => console.log("delete " + ticketId)} />
-                            }>
-                            </Route>
-                            <Route path="/tickets/:ticketId" render={({ match }) => {
-                                const ticket = JSON.parse(localStorage.getItem('tickets')).find((t) => {
-                                    console.log(match.params);
-                                    return t.cuid == match.params.ticketId
-                                });
-                                return (ticket ? <TicketListItem ticket={ticket} onDelete={(ticket) => console.log("delete " + ticket.cuid)} /> :
-                                    <h3>This Id does not match any Ticket you own</h3>);
-                            }
-                            }>
-                            </Route>
-                        </main>
-                    </div >
-                </Router >
-            </Provider>
-        );
-    }
+    signupFallback = () => {
+    let postData = { googleid: "106616597160328764559", name: "Vincent Vinegar", email: "vvinberlin@gmail.com", token: "ya29.GlwEBt2age7FhvTdQXwIWg9PeGlbkgqM8fGPbXHtz0vTm…TLBAVU7-7t4yDKZlPSTB4_t8Uyj7GmfHfc8mFjcS63WHGIZ6g" };
+
+
+    sessionStorage.setItem('userData', JSON.stringify(postData));
+    this.setState({ isAuthenticated: true, name: postData.name, email: postData.email });
+};
+/**
+ *  called on signout, clears the session and resets the state
+ */
+signout = () => {
+    this.setState({ isAuthenticated: false, name: '', email: '' });
+    sessionStorage.clear();
+};
+/**
+ * alerts the error if the googleResponse got an error
+ */
+onFailure = (error) => {
+    console.error(error);
+};
+render() {
+    let auth = <div className="auth">{
+        this.state.isAuthenticated ?
+            (
+                <div>
+                    <User />
+                    <button onClick={this.signout} className="logoutButton" >Logout</button>
+                </div>
+            ) : (
+                <GoogleLogin
+                    clientId="608216264695-93sejhvjsk8dloetsbdiod8gqjmpgutd.apps.googleusercontent.com"
+                    buttonText="Login"
+                    onSuccess={this.signup}
+                    onFailure={this.onFailure}
+                />
+            )
+    }</div>;
+    return (
+        <Provider store={this.state.store}>
+            <Router history={createBrowserHistory()} >
+                <div className="App">
+                    <header className="App-header">
+                        {auth}
+                        <h1 className="App-title">Ticket Wallet</h1>
+                    </header>
+                    <main>
+                        <Route exact={true} path="/" render={() =>
+                            <TicketList tickets={JSON.parse(localStorage.getItem('tickets'))} handleDeleteTicket={(ticketId) => console.log("delete " + ticketId)} />
+                        }>
+                        </Route>
+                        <Route path="/tickets/:ticketId" render={({ match }) => {
+                            const ticket = JSON.parse(localStorage.getItem('tickets')).find((t) => {
+                                console.log(match.params);
+                                return t.cuid == match.params.ticketId
+                            });
+                            return (ticket ? <TicketListItem ticket={ticket} onDelete={(ticket) => console.log("delete " + ticket.cuid)} /> :
+                                <h3>This Id does not match any Ticket you own</h3>);
+                        }
+                        }>
+                        </Route>
+                    </main>
+                </div >
+            </Router >
+        </Provider>
+    );
+}
 };
 
 export default App;
