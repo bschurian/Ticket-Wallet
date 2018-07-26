@@ -75,7 +75,7 @@ class User extends Component{
 
     render(){
         let name = JSON.parse(sessionStorage.getItem('userData')).name;
-        return <div>User: {name}</div>
+        return <div>{name}</div>
     }
 }
 

@@ -21,9 +21,15 @@
   margin: 0;
 }
 
+
+main{
+  margin: 10px 0px 100px 0px;
+
+}
 .auth{
   display: flex;
-  justify-content: center;
   align-content: center;
   align-self: center;
+  justify-content: flex-end;
+
 }

@@ -78,22 +78,16 @@ class App extends Component {
             this.state.isAuthenticated ?
                 (
                     <div>
-                        <br />
                         <User />
-                        <button onClick={this.signout} className="logoutButton" >
-                            Logout
-                </button>
+                        <button onClick={this.signout} className="logoutButton" >Logout</button>
                     </div>
                 ) : (
-                    <div>
-                        <br />
                         <GoogleLogin
                             clientId="608216264695-93sejhvjsk8dloetsbdiod8gqjmpgutd.apps.googleusercontent.com"
                             buttonText="Login"
                             onSuccess={this.signup}
                             onFailure={this.onFailure}
                         />
-                    </div>
                 )
         }</div>;
         return (

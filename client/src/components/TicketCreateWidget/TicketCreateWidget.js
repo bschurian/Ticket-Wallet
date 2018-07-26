@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import qrcode from '../../qrcode';
+import QRCam from './QR-Cam';
+import Collapsible from 'react-collapsible';
 
 // Import Style
 import styles from './TicketCreateWidget.css';
@@ -8,15 +10,18 @@ import styles from './TicketCreateWidget.css';
 export class TicketCreateWidget extends Component {
   constructor(props) {
     super(props);
-    this.state = { qrText: "No QR-Text", title: "No Title" };
+    this.state = {
+      qrText: "No QR-Text",
+      title: "No Title",
+      // qrCamClosed:true
+    };
   }
   addTicket = () => {
     const titleRef = this.refs.title;
-    const contentRef = this.refs.content;
-    if (titleRef.value && contentRef.value) {
+    if (titleRef.value && this.state.qrText) {
       // this.props.addTicket( titleRef.value, contentRef.value);
-      this.setState({title:titleRef.value});
-      this.openQRCamera(contentRef.files[0]);
+      this.setState({ title: titleRef.value });
+      this.sendNewTicket(titleRef.value);
     }
   };
   openQRCamera(file) {
@@ -28,26 +33,30 @@ export class TicketCreateWidget extends Component {
           alert("No QR code found. Please make sure the QR code is within the camera's frame and try again.");
         } else {
           that.setState({ qrText: res });
-          that.sendNewTicket()
         }
       };
       qrcode.decode(reader.result);
-      
+
     };
     reader.readAsDataURL(file);
   }
-  sendNewTicket() {
+  //param title beacause setstate appears to be async and not fast enough to complete before fetch
+  sendNewTicket(title) {
     fetch('/users/' + JSON.parse(sessionStorage.getItem("userData")).googleid + '/tickets',
       {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({
-          title: this.state.title,
+          title: title,
           content: this.state.qrText
         })
       }).then(console.log).catch(console.error);
   }
   render() {
+    const handleScanUnbound = function (content) {
+      if (content !== null) { this.setState({ qrText: content }); }
+    };
+    const handleScan = handleScanUnbound.bind(this);
     const cls = `${styles.form} ${(this.props.showAddTicket ? styles.appear : '')}`;
     return (
       <div className={cls}>
@@ -57,12 +66,22 @@ export class TicketCreateWidget extends Component {
           <input placeholder='Name' className={styles['form-field']} ref="title" />
           <label>QR-Code:</label>
           <input
-            type='file' label='Upload' accept='image/*'
+            type='file' label='Upload' accept='image/*' onChange={() =>
+              this.openQRCamera(this.refs.content.files[0])
+            }
             ref={(ref) => { this.refs.content = ref }}
           />
+          <Collapsible
+            trigger={<button>Take a Picture</button>}
+            onClose={() => this.setState({ qrCamClosed: true })}
+            onOpen={() => { console.log(99); this.setState({ qrCamClosed: false }); }}>
+            {!this.state.qrCamClosed ? <QRCam handleScan={handleScan} /> : ''}
+          </Collapsible>
+          <p>{"" + this.state.qrText}</p>
+
           <a className={styles['ticket-submit-button']} href="#" onClick={this.addTicket}>submit</a>
         </div>
-      </div>
+      </div >
     );
   }
 }

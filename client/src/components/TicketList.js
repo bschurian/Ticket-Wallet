@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Collapsible from 'react-collapsible';
 
 // Import Components
 import TicketListItem from './TicketListItem/TicketListItem';
@@ -10,7 +11,7 @@ function TicketList(props) {
     <div>
       <div className="listView">
         {
-          props.tickets.map(ticket => (
+          (props.tickets||[]).map(ticket => (
             <TicketListItem
               ticket={ticket}
               key={ticket.cuid}
@@ -19,10 +20,12 @@ function TicketList(props) {
           ))
         }
       </div>
-      <TicketCreateWidget
-        addTicket={(newTicket) => console.log(newTicket)}
-        showAddTicket={true}
-      />
+      <Collapsible trigger={<button>Add More Tickets</button>} lazyRender={true} triggerWhenOpen="">
+        <TicketCreateWidget
+          addTicket={(newTicket) => console.log(newTicket)}
+          showAddTicket={true}
+        />
+      </Collapsible>
     </div>
   );
 }
